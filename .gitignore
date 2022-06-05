@@ -1,0 +1,8 @@
+node_modules
+db/*
+.idea
+**/*/node_modules
+client/build
+imsdb
+mongodb
+./vscode

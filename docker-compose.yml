@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  helpdesk:
+    image: helpdesk
+    build: ./server
+    # build:
+    #   context: server
+    #   dockerfile: ./Dockerfile
+    # environment:
+    #   NODE_ENV: production
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    networks:
+      - svcnw
+  mongo:
+    container_name: mongodb-container-name
+    restart: always
+    # use specific mongo verion in production
+    image: mongo:latest
+    command: mongod --noauth
+    volumes:
+      - ./imsdb:/data/db
+    ports:  
+      - "27017:27017"
+    networks:
+      - svcnw
+networks:
+  svcnw:
+    driver: bridge
