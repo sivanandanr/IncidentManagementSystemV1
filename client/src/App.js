@@ -1,4 +1,4 @@
-import React,{Suspense,lazy} from 'react';
+import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {BrowserRouter as Router,Route} from 'react-router-dom'
@@ -14,7 +14,7 @@ import ManageUsers from "./components/users/manage-users.component";
 import ManageProjects from "./components/projects/manage-projects.component";
 import EditIncident from "./components/incidents/edit-incident.component";
 import {ErrorBoundary} from './components/shared/ErrorBoundary';
-import Page404 from './components/shared/Page404';
+
 const OurFallbackComponent = ({ error, componentStack, resetErrorBoundary }) => {
   return (
     <div>
@@ -40,7 +40,7 @@ export default function App() {
           <Route exact  path="/users/create" component={CreateUser} />
           <Route exact  path="/manage-projects" component={ManageProjects} />
           <Route exact path="/edit/:id" component={EditIncident} />
-          <Route path="*" component={ Page404} ></Route>
+         
         </div>
       </div>
     </Router>

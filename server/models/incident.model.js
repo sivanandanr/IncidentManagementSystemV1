@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require("mongoose-paginate-v2");
 const Schema = mongoose.Schema;
 
 // Create Schema
@@ -13,7 +14,7 @@ const incidentSchema = new Schema({
 }, {
     timestamps: true,
 });
-
+incidentSchema.plugin(mongoosePaginate);
 const Incident = mongoose.model('Incident', incidentSchema);
 
 module.exports = Incident;

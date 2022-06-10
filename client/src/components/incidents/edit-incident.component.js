@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import * as myConstClass  from '../../const/constant';
 const priorities = myConstClass.priorities;
 const statuses = myConstClass.statuses;

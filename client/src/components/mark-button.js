@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 const notify = (a) => toast(a);
 export default class MarkButton extends React.Component {
 	constructor(props) {

@@ -23,9 +23,9 @@ export default class CreateIncident extends Component {
   		    description: '',
   		    projectName: '',
           assignee: '',
-  		    priority: '',
-  		    status: '',
-  		    type: '',
+  		    priority: 'Low',
+  		    status: 'Open',
+  		    type: 'Bug',
           users: [],
           projects: []
         };
@@ -128,9 +128,9 @@ export default class CreateIncident extends Component {
         this.setState({ 
           title: '',
           description: '',
-          priority: '',
-          status: '',
-          type: ''
+          priority: 'Low',
+  		    status: 'Open',
+  		    type: 'Bug',
         });
         
     }

@@ -27,7 +27,15 @@ router.route('/').get((req, res) => {
         .then(users => res.json(users))
         .catch(err => res.status(400).json('Error: ' + err));
 });
-
+router.route('/findUser').get((req, res) => {
+    const { email, password } = req.query;
+    User.find({email:email,password: password })
+        .then(users =>{
+        console.log(users);
+        res.json(users)
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+});
 // DELETE
 router.route('/:id').delete((req,res) => {
 User.findByIdAndDelete(req.params.id)

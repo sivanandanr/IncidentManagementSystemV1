@@ -1,5 +1,10 @@
 const router = require('express').Router();
-
+const getPagination = (page, size) => {
+    const limit = size ? +size : 3;
+    const offset = page ? page * limit : 0;
+  
+    return { limit, offset };
+  };
 // Project Model
 const Incident = require('../models/incident.model');
 
@@ -7,6 +12,21 @@ const Incident = require('../models/incident.model');
 router.route('/').get((req, res) => {
 	Incident.find()
 		.then(incidents => res.json(incidents))
+		.catch(err => res.status(400).json('Error: ' + err));
+});
+// index (get all Incidents)
+router.route('/getAll').get((req, res) => {
+    const { page, size, title } = req.query;
+    var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } }: {};
+    const { limit, offset } = getPagination(page, size);
+
+	Incident.paginate(condition, { offset, limit })
+		.then(a => res.json({
+            incidents: a.docs,
+            offset:a.offset,
+            currentPage:a.page,
+            totalPagedItem:a.totalDocs
+        }))
 		.catch(err => res.status(400).json('Error: ' + err));
 });
 

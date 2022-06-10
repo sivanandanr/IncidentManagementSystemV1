@@ -1,24 +1,38 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Incident from './incident-display';
-
+import ReactPaginate from 'react-paginate';
 export default class IncidentList extends Component {
 	constructor(props) {
 		super(props);
 
 		this.deleteIncident = this.deleteIncident.bind(this);
 
-		this.state = { incidents: [] };
+		this.state = {
+            offset: 0,
+            incidents: [],
+            perPage: 3,
+            currentPage: 0,
+        };
+        this.handlePageClick = this
+            .handlePageClick
+            .bind(this);
 	}
 
     componentDidMount() {
-        axios.get('http://localhost:3000/incidents/')
+        this.getAllIncidents();
+    }
+    getAllIncidents(){
+        axios.get(`http://localhost:3000/incidents/getAll?size=`+this.state.perPage+`&page=`+this.state.currentPage)
             .then(res => {
-                this.setState({ incidents: res.data })
+                const data = res.data;
+                this.setState({
+                    pageCount: Math.ceil(data.totalPagedItem / this.state.perPage),
+                    incidents: data.incidents
+                });
             })
             .catch(error => console.log(error));
     }
-
     deleteIncident(id) {
 	    axios.delete('http://localhost:3000/incidents/'+id)
 	        .then(res => { console.log(res.data)});
@@ -40,7 +54,19 @@ export default class IncidentList extends Component {
         })
 	}
 
-    
+    handlePageClick = (e) => {
+        const selectedPage = e.selected;
+        const offset = selectedPage * this.state.perPage;
+
+        this.setState({
+            currentPage: selectedPage,
+            offset: offset
+        }, () => {
+            this.getAllIncidents()
+        });
+
+    };
+
 
 	render() {
 		return(
@@ -64,6 +90,22 @@ export default class IncidentList extends Component {
                 <tbody>
                     { this.getAllList() }
                 </tbody>
+                <tr>
+                    <td colSpan='8'>
+                    <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
+                    pageCount={this.state.pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={this.handlePageClick}
+                    containerClassName={"pagination"}
+                    subContainerClassName={"pages pagination"}
+                    activeClassName={"active"}/>
+                    </td>
+                </tr>
             </table>
             </div>
         </div>
