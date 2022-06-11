@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import {login} from './services/authentication';
+import UserDataService from '../users/services/user-services';
 const notify = (a) => toast(a);
 
 export default class LoginComponent extends Component 
@@ -40,16 +42,18 @@ export default class LoginComponent extends Component
             userName: this.state.userName,
             password:this.state.password
         }
-        axios.get(`http://localhost:3000/users/findUser?email=`+user.userName+`&password=` + user.password)
+        UserDataService.findUser(user)
             .then(res => 
                 {
                     var usr = res.data;
                     if(usr.length > 0)
                     {
-                        localStorage.setItem("user",JSON.stringify(usr[0]));
+                        login(usr[0]);
+                        //localStorage.setItem("user",JSON.stringify(usr[0]));
                         notify('Successfully updated.');
+                        //this.props.globalLogin(true);
                         setTimeout(()=> {
-                            this.props.history.push('/Dashboard');
+                            this.props.history.push('/home');
                         }, 500);
                     }else{
                         notify('login failed.Please try again..');

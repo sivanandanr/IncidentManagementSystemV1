@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import ProjectDataService from './services/project-services';
 import { ToastContainer, toast } from 'react-toastify';
 const notify = (a) => toast(a);
 export default class CreateProject extends Component {
@@ -17,7 +17,7 @@ export default class CreateProject extends Component {
 
     componentDidMount() {
         // get list of projects to set default project
-        axios.get('http://localhost:3000/projects/')
+        ProjectDataService.getAll()
             .then(res => {
                 if(res.data.length > 0) {
                     this.setState({
@@ -43,7 +43,7 @@ export default class CreateProject extends Component {
 
         console.log(project);
 
-        axios.post('http://localhost:3000/projects/create', project)
+        ProjectDataService.create(project)
             .then(res => console.log(res.data));
 
         // clear form

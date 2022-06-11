@@ -1,30 +1,31 @@
 version: '3.7'
 
 services:
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    image: myapp-client
-    container_name: myapp-react-client
-    command: npm run start
-    volumes:
-      - ./client/:/usr/app
-      - /usr/app/node_modules
-    depends_on:
-      - helpdesk
-    ports:
-      - "4000:4000"
-    networks:
-      - svcnw
+  # client:
+  #   build: 
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 5400:5400
+  #   networks:
+  #     - mern-network
+  #   volumes:
+  #     - ./client/src:/usr/app/src
+  #     - ./client/public:/usr/app/public
+  #   depends_on:
+  #     - server
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true
+  #   command: npm start
+  #   stdin_open: true
+  #   tty: true
   helpdesk:
     image: helpdesk
-    build: ./server
-    # build:
-    #   context: server
-    #   dockerfile: ./Dockerfile
-    # environment:
-    #   NODE_ENV: production
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - ./server/src:/usr/app/src
     ports:
       - 3000:3000
     depends_on:
@@ -32,7 +33,7 @@ services:
     links:
       - mongo
     networks:
-      - svcnw
+      - mern-network
   mongo:
     container_name: mongodb-container-name
     restart: always
@@ -44,7 +45,11 @@ services:
     ports:  
       - "27017:27017"
     networks:
-      - svcnw
+      - mern-network
 networks:
-  svcnw:
+  mern-network:
     driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local

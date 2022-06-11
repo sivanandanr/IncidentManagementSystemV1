@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import CreateUser from "./create-user.component";
-
+import UserDataService from './services/user-services';
 const User = props => (
     <tr>
         <td>{props.user.name}</td>
@@ -27,7 +27,7 @@ export default class ManageUsers extends Component {
 	}
 
     componentDidMount() {
-        axios.get('http://localhost:3000/users/')
+        UserDataService.getAll()
             .then(res => {
                 this.setState({ users: res.data })
             })
@@ -35,7 +35,7 @@ export default class ManageUsers extends Component {
     }
 
     componentDidUpdate() {
-        axios.get('http://localhost:3000/users/')
+        UserDataService.getAll()
             .then(res => {
                 this.setState({ users: res.data })
             })
@@ -43,7 +43,7 @@ export default class ManageUsers extends Component {
     }
 
     deleteUser(id) {
-	    axios.delete('http://localhost:3000/users/'+id)
+	    UserDataService.delete(id)
 	        .then(res => { console.log(res.data)});
 
 	    // update incidents array to all users without matching id
@@ -65,7 +65,7 @@ export default class ManageUsers extends Component {
 	render() {
 		return(
 			<div className="card">
-            <div className="card-header">Panel Heading</div>
+            <div className="card-header"><h3>Users</h3></div>
             <div className="card-body">
 				<table className="table">
                     <thead className="thead-light">

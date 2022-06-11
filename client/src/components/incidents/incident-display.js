@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import IncidentDataService  from './services/incident-services';
 import { Link } from 'react-router-dom';
 import MarkButton from '../mark-button';
 
@@ -19,7 +19,7 @@ let getPriorities = (lvl) => {
 export default class Incident extends Component {
     constructor(props) {
         super(props);
-
+        
         this.state = {
             status: ''
         }
@@ -27,7 +27,7 @@ export default class Incident extends Component {
 
     componentDidMount() {
         // default state of Incident
-        axios.get('http://localhost:3000/incidents/'+this.props.incident._id)
+        IncidentDataService.get(this.props.incident._id)
             .then(res => {
                 this.setState({
                     title: res.data.title,
@@ -57,13 +57,13 @@ export default class Incident extends Component {
                 <td>{this.props.incident.status}</td>
                 <td>{this.props.incident.type}</td>
                 <td >
-                    <Link to={"/edit/"+this.props.incident._id} className="btn btn-primary"><i className="fas fa-edit" title='Edit'></i>Edit</Link>
+                    <Link to={"/edit/"+this.props.incident._id} className="btn btn-primary" style={{display: this.props.isAdmin ? 'inline':'none'}}><i className="fas fa-edit" title='Edit' ></i>Edit</Link>
                     &nbsp;
                     <a href="#" className="btn btn-danger" onClick={() => { 
                         if(window.confirm('Are you sure you want to delete this incident?')) 
                             this.props.deleteIncident(this.props.incident._id) 
                     }} 
-                    title='delete'><i className="fa fa-trash"></i>Delete</a>
+                    title='delete' style={{display: this.props.isAdmin ? 'inline':'none'}}><i className="fa fa-trash"></i>Delete</a>
                     &nbsp;
                     
                     <MarkButton 

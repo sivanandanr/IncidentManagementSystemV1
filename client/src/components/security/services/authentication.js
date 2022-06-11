@@ -1,31 +1,34 @@
 // import { validateUser } from '../helpers/http'
 
-// export const getAuthState = () => {
-//   return {
-//     userToken: localStorage.getItem('userToken'),
-//     username: localStorage.getItem('username'),
-//     role: localStorage.getItem('role')
-//   }
-// }
+export const getAuthState = () => {
+  return {
+    
+    username: localStorage.getItem('username'),
+    role: localStorage.getItem('role'),
+    name: localStorage.getItem('name')
+  }
+}
 
-// export const login = (username, password) => {
-//   return validateUser(username, password).then(user => {
-//     localStorage.setItem('userToken', user.token)
-//     localStorage.setItem('username', user.username)
-//     localStorage.setItem('role', user.role)
-//     return {
-//       userToken: user.token,
-//       username: user.username,
-//       role: user.role
-//     }
-//   })
-// }
+export const isLoggedin = () => {
+    if(localStorage.getItem('name'))
+    {
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+export const login = (user) => {
+    localStorage.setItem('username', user.email);
+    localStorage.setItem('name', user.name);
+    localStorage.setItem('role', user.role);
+    return {
+      username: user.username,
+      role: user.role,
+      name: user.name
+    }
+}
 
-// export const logout = () => {
-//   return new Promise((resolve) => {
-//     localStorage.removeItem('userToken')
-//     localStorage.removeItem('username')
-//     localStorage.removeItem('role')
-//     resolve(true)
-//   })
-// }
+export const logout = () => {
+    localStorage.clear();
+}

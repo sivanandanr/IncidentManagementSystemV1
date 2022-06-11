@@ -16,8 +16,8 @@ router.route('/').get((req, res) => {
 });
 // index (get all Incidents)
 router.route('/getAll').get((req, res) => {
-    const { page, size, title } = req.query;
-    var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } }: {};
+    const { page, size, assignee } = req.query;
+    var condition = assignee ? { assignee: { $regex: new RegExp(assignee), $options: "i" } }: {};
     const { limit, offset } = getPagination(page, size);
 
 	Incident.paginate(condition, { offset, limit })

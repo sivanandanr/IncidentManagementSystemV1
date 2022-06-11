@@ -1,5 +1,7 @@
 import React, { Component} from 'react';
-import axios from 'axios';
+import IncidentDataService from './services/incident-services';
+import ProjectDataService from '../projects/services/project-services';
+import UserDataService from '../users/services/user-services';
 import { toast } from 'react-toastify';
 import * as myConstClass  from '../../const/constant';
 const priorities = myConstClass.priorities;
@@ -38,7 +40,7 @@ export default class EditIncident extends Component {
     componentDidMount() {
        console.log(this.props.match);
         // default state of incident
-        axios.get('http://localhost:3000/incidents/'+this.props.match.params.id)
+        IncidentDataService.get(this.props.match.params.id)
             .then(res => {
                 this.setState({
                     title: res.data.title,
@@ -53,7 +55,7 @@ export default class EditIncident extends Component {
             .catch((error) => { console.log(error); })
 
         // get list of users to select from
-        axios.get('http://localhost:3000/users/')
+        UserDataService.getAll()
         .then(res => {
             if(res.data.length > 0) {
                 this.setState({
@@ -64,7 +66,7 @@ export default class EditIncident extends Component {
         .catch((error) => { console.log(error); })
 
         // get list of projects to select from
-        axios.get('http://localhost:3000/projects/')
+        ProjectDataService.getAll()
         .then(res => {
             if(res.data.length > 0) {
                 this.setState({
@@ -130,11 +132,11 @@ export default class EditIncident extends Component {
             type: this.state.type
         }
 
-        axios.post('http://localhost:3000/incidents/update/' + this.props.match.params.id, incident)
+        IncidentDataService.update(this.props.match.params.id, incident)
             .then(res => console.log(res.data));
             notify('Successfully updated.');
             setTimeout(()=> {
-                this.props.history.push('/');
+                this.props.history.push('/home');
             }, 500);
         
     }

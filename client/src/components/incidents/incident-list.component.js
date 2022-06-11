@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import IncidentDataService from './services/incident-services';
+import{getAuthState,isLoggedin} from '../security/services/authentication';
 import Incident from './incident-display';
 import ReactPaginate from 'react-paginate';
+import * as myConstClass  from '../../const/constant';
+const roles = myConstClass.roles;
+
 export default class IncidentList extends Component {
 	constructor(props) {
 		super(props);
-
+        this.role = getAuthState().role;
+        this.name = getAuthState().name;
+        this.isLogin = isLoggedin;
+        this.isAdmin = this.role == "Admin";
 		this.deleteIncident = this.deleteIncident.bind(this);
-
+        
 		this.state = {
             offset: 0,
             incidents: [],
             perPage: 3,
             currentPage: 0,
+            totalitem: 0
         };
         this.handlePageClick = this
             .handlePageClick
@@ -20,21 +28,40 @@ export default class IncidentList extends Component {
 	}
 
     componentDidMount() {
-        this.getAllIncidents();
+        if(this.role === "Admin"){
+            this.getAllIncidents();
+        }else{
+            this.getMyIncidents();
+        }
     }
+    
     getAllIncidents(){
-        axios.get(`http://localhost:3000/incidents/getAll?size=`+this.state.perPage+`&page=`+this.state.currentPage)
+        IncidentDataService.getAllPagedIncident(this.state.perPage,this.state.currentPage)
             .then(res => {
                 const data = res.data;
                 this.setState({
                     pageCount: Math.ceil(data.totalPagedItem / this.state.perPage),
-                    incidents: data.incidents
+                    incidents: data.incidents,
+                    totalitem: data.totalPagedItem
+                });
+            })
+            .catch(error => console.log(error));
+    }
+    getMyIncidents(){
+        
+        IncidentDataService.getMyAllPagedIncident(this.state.perPage,this.state.currentPage,this.name)
+            .then(res => {
+                const data = res.data;
+                this.setState({
+                    pageCount: Math.ceil(data.totalPagedItem / this.state.perPage),
+                    incidents: data.incidents,
+                    totalitem: data.totalPagedItem
                 });
             })
             .catch(error => console.log(error));
     }
     deleteIncident(id) {
-	    axios.delete('http://localhost:3000/incidents/'+id)
+	    IncidentDataService.delete(id)
 	        .then(res => { console.log(res.data)});
 
 	    // update incidents array to all incidents without matching id
@@ -50,6 +77,7 @@ export default class IncidentList extends Component {
             			incident={currentIncident} 
             			deleteIncident={this.deleteIncident}
                         key={currentIncident._id}
+                        isAdmin={this.isAdmin}
                         />;
         })
 	}
@@ -62,13 +90,18 @@ export default class IncidentList extends Component {
             currentPage: selectedPage,
             offset: offset
         }, () => {
-            this.getAllIncidents()
+            if(this.role == "Admin"){
+                this.getAllIncidents();
+            }else{
+                this.getMyIncidents();
+            }
         });
 
     };
-
+    
 
 	render() {
+        const show = this.role === "Admin";
 		return(
             
             <div className="card">
@@ -88,7 +121,7 @@ export default class IncidentList extends Component {
                 </tr>
                 </thead>
                 <tbody>
-                    { this.getAllList() }
+                    { this.getAllList(show) }
                 </tbody>
                 <tr>
                     <td colSpan='8'>
@@ -104,7 +137,11 @@ export default class IncidentList extends Component {
                     containerClassName={"pagination"}
                     subContainerClassName={"pages pagination"}
                     activeClassName={"active"}/>
+
+                    <b style={{float:'right'}}>Total records:<b>{this.state.totalitem}</b></b>
                     </td>
+                    
+
                 </tr>
             </table>
             </div>

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import IncidentDataService from './services/incident-services';
+import ProjectDataService from '../projects/services/project-services';
+import UserDataService from '../users/services/user-services';
 import * as myConstClass  from '../../const/constant';
 const priorities = myConstClass.priorities;
 const statuses = myConstClass.statuses;
@@ -40,7 +42,7 @@ export default class CreateIncident extends Component {
       });
 
       // get list of users to set default assignee
-      axios.get('http://localhost:3000/users/')
+      UserDataService.getAll()
         .then(res => {
             if(res.data.length > 0) {
                 this.setState({
@@ -52,7 +54,7 @@ export default class CreateIncident extends Component {
         .catch((error) => { console.log(error); })
 
         // get list of projects to set default project
-      axios.get('http://localhost:3000/projects/')
+        ProjectDataService.getAll()
         .then(res => {
             if(res.data.length > 0) {
                 this.setState({
@@ -119,7 +121,7 @@ export default class CreateIncident extends Component {
             type: this.state.type
         }
 
-        axios.post('http://localhost:3000/incidents/create', incident)
+        IncidentDataService.create(incident)
             .then(res => console.log(res.data))
 
         alert('Successfully created.');

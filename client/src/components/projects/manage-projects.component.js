@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-
+import ProjectDataService from './services/project-services';
 import CreateProject from "./create-project.component";
 
 const Project = props => (
@@ -26,7 +25,7 @@ export default class ManageProjects extends Component {
 	}
 
     componentDidMount() {
-        axios.get('http://localhost:3000/projects/')
+        ProjectDataService.getAll()
             .then(res => {
                 this.setState({ projects: res.data })
             })
@@ -34,7 +33,7 @@ export default class ManageProjects extends Component {
     }
 
     componentDidUpdate() {
-        axios.get('http://localhost:3000/projects/')
+        ProjectDataService.getAll()
             .then(res => {
                 this.setState({ projects: res.data })
             })
@@ -42,7 +41,7 @@ export default class ManageProjects extends Component {
     }
 
     deleteProject(id) {
-	    axios.delete('http://localhost:3000/projects/'+id)
+	    ProjectDataService.delete(id)
 	        .then(res => { console.log(res.data)});
 
 	    // update incident array to all projects without matching id
@@ -64,7 +63,7 @@ export default class ManageProjects extends Component {
 	render() {
 		return(
 			<div className="card">
-            <div className="card-header"><h3>Edit Incident</h3></div>
+            <div className="card-header"><h3>Projects</h3></div>
             <div className="card-body">
 				<table className="table">
                     <thead className="thead-light">
